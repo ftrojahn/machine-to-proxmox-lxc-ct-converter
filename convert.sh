@@ -61,11 +61,11 @@ ssh "root@$target" "$(typeset -f collectFS); collectFS" \
     > "/tmp/$name.tar.gz"
 
 pct create $id "/tmp/$name.tar.gz" \
-  -description LXC \
-  -hostname $name \
+  --description LXC \
+  --hostname $name \
   --features nesting=1 \
-  -memory $memory -nameserver 8.8.8.8 \
-  -net0 name=eth0,ip=$ip/24,gw=$gateway,bridge=$bridge \
-  --rootfs $rootsize -storage $storage -password $password
+  --memory $memory \
+  --net0 name=eth0,ip=dhcp,bridge=$bridge \
+  --rootfs Storage:$rootsize --password $password
 
 rm -rf "/tmp/$name.tar.gz"
