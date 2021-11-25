@@ -51,13 +51,13 @@ collectFS() {
 	--exclude="dev" \
 	--exclude="run" \
 	--exclude="proc" \
-	--exclude="*.log" \
-	--exclude="*.log*" \
-	--exclude="*.gz" \
-	--exclude="*.sql" \
 	--exclude="swap.img" \
 	.
 }
+#	--exclude="*.log" \
+#	--exclude="*.log*" \
+#	--exclude="*.gz" \
+#	--exclude="*.sql" \
 
 if [ $tarcreate ] ; then
 # get from remote
