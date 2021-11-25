@@ -47,10 +47,10 @@ done
 
 collectFS() {
     tar -czvvf - -C / \
-	--exclude="sys" \
-	--exclude="dev" \
-	--exclude="run" \
-	--exclude="proc" \
+	--exclude="./sys" \
+	--exclude="./dev" \
+	--exclude="./run" \
+	--exclude="./proc" \
 	--exclude="swap.img" \
 	.
 }
