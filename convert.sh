@@ -34,6 +34,7 @@ do
         -n|--name)      name=$2; shift 2;;
         -c|--tarcreate) tarcreate=$2; shift 2;;
         -v|--tmpvolume) tmpvolume=$2; shift 2;;
+        -r|--removetar) removetar=$2; shift 2;;
         -t|--target)    target=$2; shift 2;;
         -i|--id)        id=$2; shift 2;;
         -s|--root-size) rootsize=$2; shift 2;;
