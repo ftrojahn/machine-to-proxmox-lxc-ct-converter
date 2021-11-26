@@ -58,6 +58,8 @@ collectFS() {
 	--exclude="./var/tmp" \
 	--exclude="./lib/modules" \
 	--exclude="swapfile" \
+	--exclude="./var/spool/postfix/dev/random" \
+	--exclude="./var/spool/postfix/dev/urandom" \
 	--exclude="swap.img" \
 	.
 }
