@@ -5,6 +5,8 @@ usage()
 $1 -h|--help
  -n|--name [lxc container name]
  -c|--tarcreate [use target machine, if not set: standard debian 10]
+ -v|--tmpvolume [instead of /tmp ]
+ -r|--removetar [remove tar after successful creation ]
  -t|--target [target machine ssh uri]
  -i|--id [proxmox container id]
  -s|--root-size [rootfs size in GB]
@@ -18,7 +20,7 @@ EOF
     return 0
 }
 
-options=$(getopt -o n:c:t:i:s:a:b:g:m:d:p:f -l help,name:,tarcreate:,target:,id:,root-size:,ip:,bridge:,gateway:,memory:,disk-storage:,password:,foo: -- "$@")
+options=$(getopt -o n:c:v:r:t:i:s:a:b:g:m:d:p:f -l help,name:,tarcreate:,tmpvolume:,removetar:,target:,id:,root-size:,ip:,bridge:,gateway:,memory:,disk-storage:,password:,foo: -- "$@")
 if [ $? -ne 0 ]; then
         usage $(basename $0)
     exit 1
@@ -31,6 +33,7 @@ do
         -h|--help)      usage $0 && exit 0;;
         -n|--name)      name=$2; shift 2;;
         -c|--tarcreate) tarcreate=$2; shift 2;;
+        -v|--tmpvolume) tmpvolume=$2; shift 2;;
         -t|--target)    target=$2; shift 2;;
         -i|--id)        id=$2; shift 2;;
         -s|--root-size) rootsize=$2; shift 2;;
@@ -63,14 +66,20 @@ collectFS() {
 #	--exclude="*.gz" \
 #	--exclude="*.sql" \
 
+if [ -n "$tmpvolume" ] && [ -d "$tmpvolume" ] ; then
+	echo using "$tmpvolume" 
+else
+	tmpvolume='/tmp'
+fi
+
 if [ $tarcreate ] ; then
 # get from remote
 ssh "root@$target" "$(typeset -f collectFS); collectFS" \
-    > "/tmp/${name}_amd64.tar.gz"
-template="/tmp/${name}_amd64.tar.gz"
-elif [ -f "/tmp/${name}_amd64.tar.gz" ] ; then
+    > "${tmpvolume}/${name}_amd64.tar.gz"
+template="${tmpvolume}/${name}_amd64.tar.gz"
+elif [ -f "${tmpvolume}/${name}_amd64.tar.gz" ] ; then
 # use existing
-template="/tmp/${name}_amd64.tar.gz"
+template="${tmpvolume}/${name}_amd64.tar.gz"
 elif [ -f "/var/lib/vz/template/cache/${name}_amd64.tar.gz" ] ; then
 # use existing
 template="/var/lib/vz/template/cache/${name}_amd64.tar.gz"
@@ -79,7 +88,7 @@ else
 template="/var/lib/vz/template/cache/debian-10-standard_10.7-1_amd64.tar.gz"
 fi
 
-pct create $id "/tmp/$name.tar.gz" \
+pct create $id "${template}" \
   --description LXC \
   --hostname $name \
   --features nesting=1 \
@@ -89,7 +98,10 @@ pct create $id "/tmp/$name.tar.gz" \
   --unprivileged 1 \
   --storage $storage \
   --rootfs "$storage":$rootsize,mountoptions=noatime \
-  --password $password 
+  --password $password \
+|| exit 5
 
 
-rm -rf "/tmp/$name.tar.gz"
+if [ $removetar ] && [ -f $template ] ; then
+	rm -f "${tmpvolume}/$name_amd64.tar.gz"
+fi
