@@ -51,6 +51,10 @@ collectFS() {
 	--exclude="./dev" \
 	--exclude="./run" \
 	--exclude="./proc" \
+	--exclude="./tmp" \
+	--exclude="./var/tmp" \
+	--exclude="./lib/modules" \
+	--exclude="swapfile" \
 	--exclude="swap.img" \
 	.
 }
