@@ -6,7 +6,8 @@
 ```
 ./convert.sh \
 -n test \
--t syspass.dgmbsd.de \
+-t target.domain.tld \
+-v /var/tmp/tarpath \
 -i 114 \
 -s 10 \
 -a 192.168.111.63 \
@@ -15,12 +16,15 @@
 -m 2048 \
 -d default \
 -p foo
-
+# -r 1 
 ```
 
 ```
-/convert.sh -h|--help
+convert.sh -h|--help
  -n|--name [lxc container name]
+ -c|--tarcreate [use target machine, if not set: standard debian 10]
+ -v|--tmpvolume [instead of /tmp ]
+ -r|--removetar [remove tar after successful creation ]
  -t|--target [target machine ssh uri]
  -i|--id [proxmox container id]
  -s|--root-size [rootfs size in GB]
