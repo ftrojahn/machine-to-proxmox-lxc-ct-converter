@@ -84,7 +84,12 @@ pct create $id "/tmp/$name.tar.gz" \
   --hostname $name \
   --features nesting=1 \
   --memory $memory \
-  --net0 name=eth0,ip=dhcp,bridge=$bridge \
-  --rootfs Storage:$rootsize --password $password
+  --net0 name=eth0,ip=$ip/24,gw=$gateway,bridge=$bridge,firewall=1 \
+  --ostype debian \
+  --unprivileged 1 \
+  --storage $storage \
+  --rootfs "$storage":$rootsize,mountoptions=noatime \
+  --password $password 
+
 
 rm -rf "/tmp/$name.tar.gz"
