@@ -75,6 +75,14 @@ else
 	tmpvolume='/tmp'
 fi
 
+if [ $tarcreate ] && [ -e $tmpvolume/${name}_amd64.tar.gz ] ; then
+	echo TARFILE exists already:
+	ls -lha $tmpvolume/${name}_amd64.tar.gz
+	echo move it out of the way, please
+        echo stopping here to prevent override
+        exit 2
+fi
+
 if [ $tarcreate ] ; then
 # get from remote
 ssh "root@$target" "$(typeset -f collectFS); collectFS" \
